@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36202.13 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "connect-four-game", "connect-four-game\connect-four-game.csproj", "{3F6ACD0D-BB7E-471F-8127-1EA53668B3B7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3F6ACD0D-BB7E-471F-8127-1EA53668B3B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F6ACD0D-BB7E-471F-8127-1EA53668B3B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F6ACD0D-BB7E-471F-8127-1EA53668B3B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F6ACD0D-BB7E-471F-8127-1EA53668B3B7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {09F022EB-A148-489C-87F8-F57B2A6EE74B}
+	EndGlobalSection
+EndGlobal
