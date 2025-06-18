@@ -49,6 +49,8 @@
         {
             Board board = new Board();
             board.DisplayBoard();
+
+            Console.WriteLine("Test1");
         }
     }
 }
