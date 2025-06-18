@@ -50,7 +50,7 @@
             Board board = new Board();
             board.DisplayBoard();
 
-            Console.WriteLine("Test1");
+            Console.WriteLine("Hello World!");
         }
     }
 }
