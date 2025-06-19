@@ -76,6 +76,32 @@
             Name = name;
             Disc = disc;
         }
+
+        public void PlayerMakeMove(Board board)
+        {
+            bool validMove = false;
+
+            while (!validMove)
+            {
+                Console.WriteLine($"{Name}'s Turn ({Disc})");
+                Console.Write("Please enter your move (1-7): ");
+                string input = Console.ReadLine();
+
+                if(int.TryParse(input, out int column))
+                {
+                    validMove = board.DroppingXO(column - 1, Disc);
+                    if (!validMove)
+                    {
+                        Console.WriteLine("Invalid move! Column is full.");
+
+                    }
+                } else
+                {
+                    Console.Write("Invalid input. Please enter your move (1-7): ");
+                }
+
+            }
+        }
     }
     
     internal class Program
@@ -90,36 +116,18 @@
 
             Players currentPlayer = player1; //current player move
 
-
-            bool isRunning = true; //game running
-            while (isRunning)
+            while (true)
             {
                 board.DisplayBoard();
-                Console.WriteLine($"{currentPlayer.Name}'s Turn ({currentPlayer.Disc})");
-                Console.Write("Please enter your move (1-7): ");
-                string input = Console.ReadLine();
+                currentPlayer.PlayerMakeMove(board);
 
-                
-                if(int.TryParse(input, out int column))
+                if(currentPlayer == player1)
                 {
-                    if(board.DroppingXO(column - 1, currentPlayer.Disc))
-                    {
-                        //switching players
-                        if(currentPlayer == player1)
-                        {
-                            currentPlayer = player2;
-                        } else
-                        {
-                            currentPlayer = player1;
-                        }
-                    } else
-                    {
-                        Console.WriteLine("Invalid move! Column is full.");
-                    }
+                    currentPlayer = player2;
                 } else
                 {
-                    Console.Write("Invalid input. Please enter your move (1-7): ");
-                } 
+                    currentPlayer = player1;
+                }
             }
         }
     }
