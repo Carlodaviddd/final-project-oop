@@ -1,19 +1,21 @@
 ﻿    namespace connect_four_game
 {
+
+    //Board Class
     public class Board
     {
         private char[,] grid;
         public int Rows { get; } = 6;
         public int Columns { get; } = 7;
 
-        //Board
+        //Constructor for board
         public Board()
         {
             grid = new char[Rows, Columns];
 
-            for(int r = 0; r < Rows; r++)
+            for (int r = 0; r < Rows; r++)
             {
-                for(int c = 0; c < Columns; c++)
+                for (int c = 0; c < Columns; c++)
                 {
                     grid[r, c] = '#';
                 }
@@ -31,7 +33,7 @@
                     Console.Write(" " + grid[r, c] + " ");
                 }
                 Console.WriteLine("|"); // Right Border
-                }
+            }
 
             //Print number 1 - 7
             Console.Write(" ");
@@ -41,16 +43,84 @@
             }
             Console.WriteLine("\n");
         }
+
+        //Dropping X and O
+        public bool DroppingXO(int column, char disc)
+        {
+            if (column < 0 || column >= Columns)
+                return false;
+
+            {
+                for (int row = Rows - 1; row >= 0; row--)
+                {
+                    if (grid[row, column] == '#')
+                    {
+                        grid[row, column] = disc;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
+    //Player Class
+    public class Players
+    {
+        public string Name { get; private set; }
+        public char Disc { get; private set; }
+
+        //Player Constructor
+        public Players(string name, char disc)
+        {
+            Name = name;
+            Disc = disc;
+        }
     }
     
     internal class Program
     {
         static void Main(string[] args)
         {
-            Board board = new Board();
-            board.DisplayBoard();
+            Board board = new Board(); // new board
 
-            Console.WriteLine("Hello World!");
+            //Creating Players
+            Players player1 = new Players("Player 1", 'X');
+            Players player2 = new Players("Player 2", 'O');
+
+            Players currentPlayer = player1; //current player move
+
+
+            bool isRunning = true; //game running
+            while (isRunning)
+            {
+                board.DisplayBoard();
+                Console.WriteLine($"{currentPlayer.Name}'s Turn ({currentPlayer.Disc})");
+                Console.Write("Please enter your move (1-7): ");
+                string input = Console.ReadLine();
+
+                
+                if(int.TryParse(input, out int column))
+                {
+                    if(board.DroppingXO(column - 1, currentPlayer.Disc))
+                    {
+                        //switching players
+                        if(currentPlayer == player1)
+                        {
+                            currentPlayer = player2;
+                        } else
+                        {
+                            currentPlayer = player1;
+                        }
+                    } else
+                    {
+                        Console.WriteLine("Invalid move! Column is full.");
+                    }
+                } else
+                {
+                    Console.Write("Invalid input. Please enter your move (1-7): ");
+                } 
+            }
         }
     }
 }
