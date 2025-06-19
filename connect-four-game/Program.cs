@@ -1,4 +1,6 @@
-﻿    namespace connect_four_game
+using System;
+
+  namespace connect_four_game
 {
 
     //Board Class
