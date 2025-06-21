@@ -122,6 +122,25 @@ namespace connect_four_game
         }
     }
 
+    // AIPlayer
+    public class AIPlayer : Players
+    {
+        private static Random rand = new Random();
+
+        public AIPlayer(string name, char disc) : base(name, disc) { }
+
+        public override void PlayerMakeMove(Board board)
+        {
+            Console.WriteLine($"{Name}'s Turn '{Disc}' (AI)");
+            int column;
+            do
+            {
+                column = rand.Next(0, board.Columns);
+            } while (!board.DroppingXO(column, Disc));
+            Console.WriteLine($"AI chose column {column + 1}");
+        }
+    }
+
     //GameManager Class
     public class GameManager
     {
