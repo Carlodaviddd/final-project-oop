@@ -66,6 +66,48 @@ namespace connect_four_game
             return false;
         }
     }
+        // checks for wins in horizontal, vertical, diagonal left and right. 
+      public bool CheckWin(char disc)
+        {
+            // Horizontal
+            for (int r = 0; r < Rows; r++)
+                for (int c = 0; c <= Columns - 4; c++)
+                    if (grid[r, c] == disc && grid[r, c + 1] == disc &&
+                        grid[r, c + 2] == disc && grid[r, c + 3] == disc)
+                        return true;
+
+            // Vertical
+            for (int c = 0; c < Columns; c++)
+                for (int r = 0; r <= Rows - 4; r++)
+                    if (grid[r, c] == disc && grid[r + 1, c] == disc &&
+                        grid[r + 2, c] == disc && grid[r + 3, c] == disc)
+                        return true;
+
+            // Diagonal /
+            for (int r = 3; r < Rows; r++)
+                for (int c = 0; c <= Columns - 4; c++)
+                    if (grid[r, c] == disc && grid[r - 1, c + 1] == disc &&
+                        grid[r - 2, c + 2] == disc && grid[r - 3, c + 3] == disc)
+                        return true;
+
+            // Diagonal \
+            for (int r = 0; r <= Rows - 4; r++)
+                for (int c = 0; c <= Columns - 4; c++)
+                    if (grid[r, c] == disc && grid[r + 1, c + 1] == disc &&
+                        grid[r + 2, c + 2] == disc && grid[r + 3, c + 3] == disc)
+                        return true;
+
+            return false;
+        }
+
+    // checks of columns are full. 
+        public bool IsFull()
+        {
+            for (int c = 0; c < Columns; c++)
+                if (grid[0, c] == '#') return false;
+            return true;
+        }
+    }
 
     //Player Abstract Class
     public abstract class Players
@@ -205,6 +247,8 @@ namespace connect_four_game
 
             return name;
         }
+
+        
 
         private void RunGameLoop()
         {
