@@ -1,8 +1,9 @@
 using System;
+using System.Text.RegularExpressions;
+using connect_four_game;
 
-  namespace connect_four_game
+namespace connect_four_game
 {
-
     //Board Class
     public class Board
     {
@@ -66,8 +67,8 @@ using System;
         }
     }
 
-    //Player Class
-    public class Players
+    //Player Abstract Class
+    public abstract class Players
     {
         public string Name { get; private set; }
         public char Disc { get; private set; }
@@ -79,58 +80,142 @@ using System;
             Disc = disc;
         }
 
-        public void PlayerMakeMove(Board board)
+        public abstract void PlayerMakeMove(Board board);
+        }
+
+    //Human vs Human
+    public class HumanPlayer : Players
+    {
+        public HumanPlayer(string name, char disc) : base(name , disc) { }
+        
+        public override void PlayerMakeMove(Board board)
         {
             bool validMove = false;
 
             while (!validMove)
             {
-                Console.WriteLine($"{Name}'s Turn ({Disc})");
+                Console.WriteLine($"{Name}'s Turn '{Disc}'");
                 Console.Write("Please enter your move (1-7): ");
                 string input = Console.ReadLine();
 
                 if(int.TryParse(input, out int column))
                 {
+                    if(column < 1 || column > 7)
+                    {
+                        Console.WriteLine("Invalid move! Please enter a number between 1 and 7");
+                        board.DisplayBoard();
+                        continue;
+                    }
+
                     validMove = board.DroppingXO(column - 1, Disc);
                     if (!validMove)
                     {
-                        Console.WriteLine("Invalid move! Column is full.");
-
+                        Console.WriteLine("Invalid Move! Column is full. Try Again. \n");
+                        board.DisplayBoard();
                     }
                 } else
                 {
                     Console.Write("Invalid input. Please enter your move (1-7): ");
+                    board.DisplayBoard();
                 }
-
             }
         }
     }
-    
-    internal class Program
+
+    //GameManager Class
+    public class GameManager
     {
-        static void Main(string[] args)
+        private Players _player1;
+        private Players _player2;
+        private Players _currentPlayer;
+        private Board _board;
+
+        public void Start()
         {
-            Board board = new Board(); // new board
+            _board = new Board();
+            Console.WriteLine("Welcome to Connect Four!");
 
-            //Creating Players
-            Players player1 = new Players("Player 1", 'X');
-            Players player2 = new Players("Player 2", 'O');
+            string selectInput;
 
-            Players currentPlayer = player1; //current player move
-
-            while (true)
+            do
             {
-                board.DisplayBoard();
-                currentPlayer.PlayerMakeMove(board);
+                Console.WriteLine("Player select: ");
+                Console.WriteLine("1. 1 Player");
+                Console.WriteLine("2. 2 Players");
+                Console.Write("Choose an option: ");
+                selectInput = Console.ReadLine();
 
-                if(currentPlayer == player1)
+                if (selectInput != "1" && selectInput != "2")
                 {
-                    currentPlayer = player2;
+                    Console.WriteLine("Invalid input. Please try again.");
+                }
+            } while (selectInput != "2");
+
+            _player1 = new HumanPlayer(GetValidName("Player 1"), 'X');
+            _player2 = new HumanPlayer(GetValidName("Player 2"), 'O');
+            _currentPlayer = _player1;
+
+            RunGameLoop();
+        }
+
+        //Set Player's Name Format
+        private string GetValidName(string label)
+        {
+            Regex regex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$");
+            string name;
+
+            do
+            {
+                Console.WriteLine();
+                Console.WriteLine($"Enter {label} Name \n" +
+                    $"Must Contain: \n" +
+                    $"1 uppercase \n" +
+                    $"1 lowercase \n" +
+                    $"and 1 digit");
+                Console.WriteLine();
+                Console.Write("Name: ");
+                name = Console.ReadLine();
+                if (!regex.IsMatch(name))
+                {
+                    Console.WriteLine("Invalid name format. Try again.");
                 } else
                 {
-                    currentPlayer = player1;
+                    Console.WriteLine($"{label} Name: {name} \n");
                 }
+            } while (!regex.IsMatch(name));
+
+            return name;
+        }
+
+        private void RunGameLoop()
+        {
+            while (true)
+            {
+                _board.DisplayBoard();
+                _currentPlayer.PlayerMakeMove(_board);
+                SwitchPlayer();
             }
         }
+
+        //Switching Players
+        private void SwitchPlayer()
+        {
+            if(_currentPlayer == _player1)
+            {
+                _currentPlayer = _player2;
+            } else
+            {
+                _currentPlayer = _player1;
+            }
+        }
+    }
+}
+
+internal class Program
+{
+    static void Main(string[] args)
+    {
+        GameManager game = new GameManager();
+        game.Start();
     }
 }
