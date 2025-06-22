@@ -201,8 +201,8 @@ namespace connect_four_game
             do
             {
                 Console.WriteLine("Player select: ");
-                Console.WriteLine("1. 1 Player");
-                Console.WriteLine("2. 2 Players");
+                Console.WriteLine("1. 1 Player (Human vs AI)");
+                Console.WriteLine("2. 2 Players (Human vs Human");
                 Console.Write("Choose an option: ");
                 selectInput = Console.ReadLine();
 
@@ -210,7 +210,19 @@ namespace connect_four_game
                 {
                     Console.WriteLine("Invalid input. Please try again.");
                 }
-            } while (selectInput != "2");
+            } while (selectInput != "1" && selectInput != "2");
+
+            _board = new Board();
+            _player1 = new HumanPlayer(GetValidName("Player 1"), 'X');
+
+            if (selectInput == "1")
+            {
+                 _player2 = new AIPlayer("AI", 'O');
+            }
+            else
+            {
+                 _player2 = new HumanPlayer(GetValidName("Player 2"), 'O');
+            }
 
             _player1 = new HumanPlayer(GetValidName("Player 1"), 'X');
             _player2 = new HumanPlayer(GetValidName("Player 2"), 'O');
