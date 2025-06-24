@@ -112,84 +112,6 @@ namespace connect_four_game
         }
     } //End of Board Class
 
-    // Player Abstract Class
-    public abstract class Players
-    {
-        public string Name { get; private set; }
-        public char Disc { get; private set; }
-
-        public Players(string name, char disc)
-        {
-            Name = name;
-            Disc = disc;
-        }
-
-        public abstract void PlayerMakeMove(Board board);
-    } // End of Player Abstract Class
-
-    // Human Player Class
-    public class HumanPlayer : Players
-    {
-        public HumanPlayer(string name, char disc) : base(name, disc) { }
-
-        public override void PlayerMakeMove(Board board)
-        {
-            bool validMove = false;
-
-            while (!validMove)
-            {
-                Console.WriteLine($"{Name}'s Turn '{Disc}'");
-                Console.Write("Enter move (1-7): ");
-                string input = Console.ReadLine();
-
-                if (int.TryParse(input, out int column))
-                {
-                    if (column >= 1 && column <= 7)
-                    {
-                        validMove = board.DroppingXO(column - 1, Disc);
-                        if (!validMove)
-                        {
-                            Console.WriteLine("\nColumn full. Try again.");
-                            board.DisplayBoard();
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("\nInvalid turn. Choose between 1-7.");
-                        board.DisplayBoard();
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("\nInvalid input.");
-                    board.DisplayBoard();
-
-                }
-            }
-        }
-    } //End of Human Player Class
-
-    //AI Player Class
-    public class AIPlayer : Players
-    {
-        private static Random rand = new Random();
-
-        public AIPlayer(string name, char disc) : base(name, disc)
-        {
-        }
-
-        public override void PlayerMakeMove(Board board)
-        {
-            Console.WriteLine($"{Name}'s Turn '{Disc}' (AI)");
-            int column;
-            do
-            {
-                column = rand.Next(0, board.Columns);
-            }
-            while (!board.DroppingXO(column, Disc));
-            Console.WriteLine($"AI chose column {column + 1}\n");
-        }
-    } //End of AI Player Class
 
     // GameManager Class
     public class GameManager
@@ -402,6 +324,85 @@ namespace connect_four_game
             }
         }
     } //End of Game Manager Class
+
+    // Player Abstract Class
+    public abstract class Players
+        {
+            public string Name { get; private set; }
+            public char Disc { get; private set; }
+            
+            public Players(string name, char disc)
+            {
+                Name = name;
+                Disc = disc;
+            }
+            
+            public abstract void PlayerMakeMove(Board board);
+        } // End of Player Abstract Class
+
+    // Human Player Class
+    public class HumanPlayer : Players
+    {
+        public HumanPlayer(string name, char disc) : base(name, disc) { }
+
+        public override void PlayerMakeMove(Board board)
+        {
+            bool validMove = false;
+
+            while (!validMove)
+            {
+                Console.WriteLine($"{Name}'s Turn '{Disc}'");
+                Console.Write("Enter move (1-7): ");
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out int column))
+                {
+                    if (column >= 1 && column <= 7)
+                    {
+                        validMove = board.DroppingXO(column - 1, Disc);
+                        if (!validMove)
+                        {
+                            Console.WriteLine("\nColumn full. Try again.");
+                            board.DisplayBoard();
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nInvalid turn. Choose between 1-7.");
+                        board.DisplayBoard();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\nInvalid input.");
+                    board.DisplayBoard();
+                    
+                }
+            }
+        }
+    } //End of Human Player Class
+
+    //AI Player Class
+    public class AIPlayer : Players
+        {
+            private static Random rand = new Random();
+
+            public AIPlayer(string name, char disc) : base(name, disc)
+            {
+            }
+
+            public override void PlayerMakeMove(Board board)
+            {
+                Console.WriteLine($"{Name}'s Turn '{Disc}' (AI)");
+                int column;
+                do
+                {
+                    column = rand.Next(0, board.Columns);
+                }
+                while (!board.DroppingXO(column, Disc));
+                Console.WriteLine($"AI chose column {column + 1}\n");
+            }
+        } //End of AI Player Class
 
     internal class Program
     {
