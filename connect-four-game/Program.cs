@@ -142,10 +142,16 @@ namespace connect_four_game
                     return row;
             return -1;
         }
-        public char GetDisc(int row, int column) => grid[row, column];
+       public char GetCell(int row, int column)
+{
+    return grid[row, column];
+}
 
-        public void SimulateMove(int row, int column, char disc) => grid[row, column] = disc;
-    } //End of Board Class
+public void SetCell(int row, int column, char value)
+   {
+    grid[row, column] = value;
+   }
+} //End of Board Class
 
 
     // GameManager Class (controls game flow)
@@ -491,67 +497,68 @@ namespace connect_four_game
 
     
     //AI Player Class
-   public class AIPlayer : Players
+  // AI Player Class
+public class AIPlayer : Players
+{
+    private static Random rand = new Random();
+
+    public AIPlayer(string name, char disc) : base(name, disc) { }
+
+    public override void PlayerMakeMove(Board board)
     {
-        private static Random rand = new Random();
+        Console.WriteLine($"{Name}'s Turn '{Disc}' (AI)");
 
-        public AIPlayer(string name, char disc) : base(name, disc) { }
+        char opponentDisc = Disc == 'X' ? 'O' : 'X';
+        int column = ChooseBestMove(board, Disc, opponentDisc);
 
-        public override void PlayerMakeMove(Board board)
+        board.DroppingXO(column, Disc);
+        Console.WriteLine($"AI chose column {column + 1}\n");
+    }
+
+    private int ChooseBestMove(Board board, char aiDisc, char opponentDisc)
+    {
+        // 1. Try to win
+        for (int col = 0; col < board.Columns; col++)
         {
-            Console.WriteLine($"{Name}'s Turn '{Disc}' (AI)");
+            int row = board.GetAvailableRow(col);
+            if (row == -1) continue;
 
-            char opponentDisc = Disc == 'X' ? 'O' : 'X';
-            int column = ChooseBestMove(board, Disc, opponentDisc);
+            board.SetCell(row, col, aiDisc);
+            bool canWin = board.CheckWin(aiDisc);
+            board.SetCell(row, col, '*');
 
-            board.DroppingXO(column, Disc);
-            Console.WriteLine($"AI chose column {column + 1}\n");
+            if (canWin)
+                return col;
         }
 
-        private int ChooseBestMove(Board board, char aiDisc, char opponentDisc)
+        // 2. Block opponent's winning move
+        for (int col = 0; col < board.Columns; col++)
         {
-            // 1. Try to win
-            for (int col = 0; col < board.Columns; col++)
-            {
-                int row = board.GetAvailableRow(col);
-                if (row == -1) continue;
+            int row = board.GetAvailableRow(col);
+            if (row == -1) continue;
 
-                board.grid[row, col] = aiDisc;
-                bool canWin = board.CheckWin(aiDisc);
-                board.grid[row, col] = '*';
+            board.SetCell(row, col, opponentDisc);
+            bool opponentCanWin = board.CheckWin(opponentDisc);
+            board.SetCell(row, col, '*');
 
-                if (canWin)
-                    return col;
-            }
-
-            // 2. Block opponent's winning move
-            for (int col = 0; col < board.Columns; col++)
-            {
-                int row = board.GetAvailableRow(col);
-                if (row == -1) continue;
-
-                board.grid[row, col] = opponentDisc;
-                bool opponentCanWin = board.CheckWin(opponentDisc);
-                board.grid[row, col] = '*';
-
-                if (opponentCanWin)
-                    return col;
-            }
-
-            // 3. Pick center column if possible
-            int center = board.Columns / 2;
-            if (board.GetAvailableRow(center) != -1)
-                return center;
-
-            // 4. Pick random valid column
-            List<int> validCols = new List<int>();
-            for (int col = 0; col < board.Columns; col++)
-                if (board.GetAvailableRow(col) != -1)
-                    validCols.Add(col);
-
-            return validCols[rand.Next(validCols.Count)];
+            if (opponentCanWin)
+                return col;
         }
-    } //End of AI Player Class
+
+        // 3. Pick center column if possible
+        int center = board.Columns / 2;
+        if (board.GetAvailableRow(center) != -1)
+            return center;
+
+        // 4. Pick random valid column
+        List<int> validCols = new List<int>();
+        for (int col = 0; col < board.Columns; col++)
+            if (board.GetAvailableRow(col) != -1)
+                validCols.Add(col);
+
+        return validCols[rand.Next(validCols.Count)];
+    }
+} //End of AI Player Class
 
     internal class Program
     {
