@@ -113,9 +113,10 @@ namespace connect_four_game
     } //End of Board Class
 
 
-    // GameManager Class
+    // GameManager Class (controls game flow)
     public class GameManager
     {
+        //Store past games
         public class GameResult
         {
             public string Winner { get; set; }
@@ -201,15 +202,16 @@ namespace connect_four_game
             return name;
         }
 
-        //Game Loop to handle player moves, define winner/loser/tie checking
+        //Game Loop to handle player moves, define winner/loser/tie
         private void RunGameLoop()
         {
             while (true)
             {
                 Console.WriteLine();
                 _board.DisplayBoard();
-                _currentPlayer.PlayerMakeMove(_board);
+                _currentPlayer.PlayerMakeMove(_board); //player action
                 
+                //Check win
                 if (_board.CheckWin(_currentPlayer.Disc))
                 {
                     _board.DisplayBoard();
@@ -235,6 +237,7 @@ namespace connect_four_game
                     break;
                 }
 
+                //Check tie
                 if (_board.IsFull())
                 {
                     _board.DisplayBoard();
@@ -250,10 +253,10 @@ namespace connect_four_game
 
                 }
 
-                SwitchPlayer();
+                SwitchPlayer(); //switching players
             }
 
-            AfterGame();
+            AfterGame(); //post game
         }
 
         //Show History
