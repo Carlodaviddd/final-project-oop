@@ -160,42 +160,76 @@ namespace connect_four_game
         private Players _player2;
         private Players _currentPlayer;
         private Board _board;
+        
+      public void Start()
+ {
+    Console.WriteLine("\nWelcome to Connect Four!");
 
-        public void Start()
+    while (true)
+    {
+        Console.WriteLine("\nMain Menu:");
+        Console.WriteLine("1. 1 Player (Human vs AI)");
+        Console.WriteLine("2. 2 Players (Human vs Human)");
+        Console.WriteLine("3. Game Instructions");
+        Console.WriteLine("4. Exit");
+        Console.Write("Choose an option: ");
+        string selectInput = Console.ReadLine();
+
+        if (selectInput == "1")
         {
-            Console.WriteLine("\nWelcome to Connect Four!");
-            string selectInput;
-
-            do
-            {
-                Console.WriteLine("Player select: ");
-                Console.WriteLine("1. 1 Player (Human vs AI)");
-                Console.WriteLine("2. 2 Players (Human vs Human)");
-                Console.Write("Choose an option: ");
-                selectInput = Console.ReadLine();
-
-                if (selectInput != "1" && selectInput != "2")
-                {
-                    Console.WriteLine("\nInvalid input. Please select between 1 or 2.");
-                    Console.WriteLine();
-                }
-            } while (selectInput != "1" && selectInput != "2");
-            
             _board = new Board();
             _player1 = new HumanPlayer(GetValidName("Player 1"), 'X');
-
-            if (selectInput == "1")
-            {
-                _player2 = new AIPlayer("AI", 'O');
-            }
-            else
-            {
-                _player2 = new HumanPlayer(GetValidName("Player 2"), 'O');
-            }
-
+            _player2 = new AIPlayer("AI", 'O');
             _currentPlayer = _player1;
             RunGameLoop();
         }
+        else if (selectInput == "2")
+        {
+            _board = new Board();
+            _player1 = new HumanPlayer(GetValidName("Player 1"), 'X');
+            _player2 = new HumanPlayer(GetValidName("Player 2"), 'O');
+            _currentPlayer = _player1;
+            RunGameLoop();
+        }
+        else if (selectInput == "3")
+        {
+            ShowInstructions();
+        }
+        else if (selectInput == "4")
+        {
+            Console.WriteLine("\nThank you for playing!");
+            Environment.Exit(0);
+        }
+        else
+        {
+            Console.WriteLine("\nInvalid input. Please select a valid option.\n");
+        }
+    }
+}
+
+
+        // Game Instructions
+        private void ShowInstructions()
+{
+    Console.WriteLine("\n--- GAME INSTRUCTIONS ---\n");
+    Console.WriteLine("Objective:");
+    Console.WriteLine("Be the first player to connect 4 discs horizontally, vertically, or diagonally.\n");
+
+    Console.WriteLine("How to Play:");
+    Console.WriteLine("1. Select game mode: 1 Player (Human vs AI) or 2 Players (Human vs Human).");
+    Console.WriteLine("2. Enter valid player names (must contain 1 uppercase, 1 lowercase, and 1 digit).");
+    Console.WriteLine("3. On your turn, enter a column number (1-7) to drop your disc.");
+    Console.WriteLine("4. Human players have 30 seconds per turn.");
+    Console.WriteLine("5. AI makes its move automatically.\n");
+
+    Console.WriteLine("Winning:");
+    Console.WriteLine("First to connect 4 discs wins. If the board fills with no winner, it's a tie.\n");
+
+    Console.WriteLine("After Game:");
+    Console.WriteLine("You can choose to play again, view past games, or exit.\n");
+
+    Console.WriteLine("----------------------------\n");
+}
 
         //Set Player's Name Format
         private string GetValidName(string label)
