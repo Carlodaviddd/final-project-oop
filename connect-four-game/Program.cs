@@ -142,6 +142,9 @@ namespace connect_four_game
                     return row;
             return -1;
         }
+        public char GetDisc(int row, int column) => grid[row, column];
+
+        public void SimulateMove(int row, int column, char disc) => grid[row, column] = disc;
     } //End of Board Class
 
 
