@@ -1,5 +1,8 @@
 using System;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using connect_four_game;
 
 namespace connect_four_game
@@ -205,6 +208,8 @@ namespace connect_four_game
         //Game Loop to handle player moves, define winner/loser/tie
         private void RunGameLoop()
         {
+            var gameStopwatch = new Stopwatch();
+            gameStopwatch.Start();
             while (true)
             {
                 Console.WriteLine();
@@ -255,7 +260,8 @@ namespace connect_four_game
 
                 SwitchPlayer(); //switching players
             }
-
+          gameStopwatch.Stop();
+          Console.WriteLine($"\nTotal Game Duration: {gameStopwatch.Elapsed.Minutes} minutes {gameStopwatch.Elapsed.Seconds} seconds\n");
             AfterGame(); //post game
         }
 
@@ -351,12 +357,19 @@ namespace connect_four_game
         public override void PlayerMakeMove(Board board)
         {
             bool validMove = false;
+            int timeLimit = 30 * 1000; // 30 seconds
 
             while (!validMove)
             {
-                Console.WriteLine($"{Name}'s Turn '{Disc}'");
+                Console.WriteLine($"{Name}'s Turn '{Disc}' - You have 30 seconds to make a move.");
                 Console.Write("Enter move (1-7): ");
-                string input = Console.ReadLine();
+                string input = ReadLineWithTimeout(timeLimit);
+
+                if (input == null)
+             {
+               Console.WriteLine("\nTime's up! You missed your turn.");
+               break;
+              }
 
                 if (int.TryParse(input, out int column))
                 {
@@ -383,8 +396,24 @@ namespace connect_four_game
                 }
             }
         }
-    } //End of Human Player Class
 
+        private string ReadLineWithTimeout(int timeLimit)
+    {
+        Task<string> task = Task.Run(() => Console.ReadLine());
+        bool completedInTime = task.Wait(timeLimit);
+
+        if (completedInTime)
+        {
+            return task.Result;
+        }
+        else
+        {
+            return null;
+        }
+    }
+} //End of Human Player Class
+
+    
     //AI Player Class
     public class AIPlayer : Players
         {
