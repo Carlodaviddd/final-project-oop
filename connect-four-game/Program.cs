@@ -1,6 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using connect_four_game;
@@ -30,6 +31,7 @@ namespace connect_four_game
         //Display Board
         public void DisplayBoard()
         {
+            Console.Clear();
             for (int r = 0; r < Rows; r++)
             {
                 Console.Write("|");
@@ -49,24 +51,43 @@ namespace connect_four_game
             Console.WriteLine("\n");
         }
 
+        public void AnimateDrop(int column, char disc)
+{
+    for (int row = 0; row < Rows; row++)
+    {
+        if (row > 0)
+            grid[row - 1, column] = '*';  // Clear previous position
+
+        // If bottom or next row is occupied, place disc here
+        if (row == Rows - 1 || grid[row + 1, column] != '*')
+        {
+            grid[row, column] = disc;
+            DisplayBoard();
+            Thread.Sleep(200);  // Pause to show final position
+            break;
+        }
+        else
+        {
+            grid[row, column] = disc;
+            DisplayBoard();
+            Thread.Sleep(200);
+        }
+    }
+}
+
+
         //Dropping X and O
         public bool DroppingXO(int column, char disc)
         {
-            if (column < 0 || column >= Columns)
-            {
-                return false;
-            }
+       if (column < 0 || column >= Columns)
+        return false;
 
-            for (int row = Rows - 1; row >= 0; row--)
-            {
-                if (grid[row, column] == '*')
-                {
-                    grid[row, column] = disc;
-                    return true;
-                }
-            }
+    // Check if column full
+    if (grid[0, column] != '*')
+        return false;
 
-            return false;
+    AnimateDrop(column, disc);
+    return true;
         }
 
         //Check for wins horizontal, vertical, diagonal left and right.
