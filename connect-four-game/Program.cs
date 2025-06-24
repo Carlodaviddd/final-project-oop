@@ -134,6 +134,14 @@ namespace connect_four_game
             }
             return true;
         }
+        // Returns row index where disc would fall in column; -1 if full
+        public int GetAvailableRow(int column)
+        {
+            for (int row = Rows - 1; row >= 0; row--)
+                if (grid[row, column] == '*')
+                    return row;
+            return -1;
+        }
     } //End of Board Class
 
 
