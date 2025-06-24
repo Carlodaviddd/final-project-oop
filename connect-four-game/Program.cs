@@ -162,51 +162,55 @@ namespace connect_four_game
         private Board _board;
         
       public void Start()
- {
-    Console.WriteLine("\nWelcome to Connect Four!");
+        {
+            Console.WriteLine("\nWelcome to Connect Four!");
 
-    while (true)
-    {
-        Console.WriteLine("\nMain Menu:");
-        Console.WriteLine("1. 1 Player (Human vs AI)");
-        Console.WriteLine("2. 2 Players (Human vs Human)");
-        Console.WriteLine("3. Game Instructions");
-        Console.WriteLine("4. Exit");
-        Console.Write("Choose an option: ");
-        string selectInput = Console.ReadLine();
+            while (true)
+            {
+                Console.WriteLine("\nMain Menu:");
+                Console.WriteLine("1. 1 Player (Human vs AI)");
+                Console.WriteLine("2. 2 Players (Human vs Human)");
+                Console.WriteLine("3. Game Instructions");
+                Console.WriteLine("4. Exit");
+                Console.Write("Choose an option: ");
+                string selectInput = Console.ReadLine();
 
-        if (selectInput == "1")
-        {
-            _board = new Board();
-            _player1 = new HumanPlayer(GetValidName("Player 1"), 'X');
-            _player2 = new AIPlayer("AI", 'O');
-            _currentPlayer = _player1;
-            RunGameLoop();
-        }
-        else if (selectInput == "2")
-        {
-            _board = new Board();
-            _player1 = new HumanPlayer(GetValidName("Player 1"), 'X');
-            _player2 = new HumanPlayer(GetValidName("Player 2"), 'O');
-            _currentPlayer = _player1;
-            RunGameLoop();
-        }
-        else if (selectInput == "3")
-        {
-            ShowInstructions();
-        }
-        else if (selectInput == "4")
-        {
-            Console.WriteLine("\nThank you for playing!");
-            Environment.Exit(0);
-        }
-        else
-        {
-            Console.WriteLine("\nInvalid input. Please select a valid option.\n");
-        }
-    }
-}
+                if (selectInput == "1")
+                {
+                    _board = new Board();
+                    _player1 = new HumanPlayer(GetValidName("Player 1"), 'X');
+                    _player2 = new AIPlayer("AI", 'O');
 
+                    Random rand = new Random();
+                    _currentPlayer = rand.Next(2) == 0 ? _player1 : _player2;
+                    Console.WriteLine($"\n{_currentPlayer.Name} will start first.\n");
+
+                    RunGameLoop();
+                }
+                else if (selectInput == "2")
+                {
+                    _board = new Board();
+                    _player1 = new HumanPlayer(GetValidName("Player 1"), 'X');
+                    _player2 = new HumanPlayer(GetValidName("Player 2"), 'O');
+                    _currentPlayer = _player1;
+
+                    RunGameLoop();
+                }
+                else if (selectInput == "3")
+                {
+                    ShowInstructions();
+                }
+                else if (selectInput == "4")
+                {
+                    Console.WriteLine("\nThank you for playing!");
+                    Environment.Exit(0);
+                }
+                else
+                {
+                    Console.WriteLine("\nInvalid input. Please select a valid option.\n");
+                }
+            }
+        }
 
         // Game Instructions
         private void ShowInstructions()
@@ -476,26 +480,67 @@ namespace connect_four_game
 
     
     //AI Player Class
-    public class AIPlayer : Players
+   public class AIPlayer : Players
+    {
+        private static Random rand = new Random();
+
+        public AIPlayer(string name, char disc) : base(name, disc) { }
+
+        public override void PlayerMakeMove(Board board)
         {
-            private static Random rand = new Random();
+            Console.WriteLine($"{Name}'s Turn '{Disc}' (AI)");
 
-            public AIPlayer(string name, char disc) : base(name, disc)
+            char opponentDisc = Disc == 'X' ? 'O' : 'X';
+            int column = ChooseBestMove(board, Disc, opponentDisc);
+
+            board.DroppingXO(column, Disc);
+            Console.WriteLine($"AI chose column {column + 1}\n");
+        }
+
+        private int ChooseBestMove(Board board, char aiDisc, char opponentDisc)
+        {
+            // 1. Try to win
+            for (int col = 0; col < board.Columns; col++)
             {
+                int row = board.GetAvailableRow(col);
+                if (row == -1) continue;
+
+                board.grid[row, col] = aiDisc;
+                bool canWin = board.CheckWin(aiDisc);
+                board.grid[row, col] = '*';
+
+                if (canWin)
+                    return col;
             }
 
-            public override void PlayerMakeMove(Board board)
+            // 2. Block opponent's winning move
+            for (int col = 0; col < board.Columns; col++)
             {
-                Console.WriteLine($"{Name}'s Turn '{Disc}' (AI)");
-                int column;
-                do
-                {
-                    column = rand.Next(0, board.Columns);
-                }
-                while (!board.DroppingXO(column, Disc));
-                Console.WriteLine($"AI chose column {column + 1}\n");
+                int row = board.GetAvailableRow(col);
+                if (row == -1) continue;
+
+                board.grid[row, col] = opponentDisc;
+                bool opponentCanWin = board.CheckWin(opponentDisc);
+                board.grid[row, col] = '*';
+
+                if (opponentCanWin)
+                    return col;
             }
-        } //End of AI Player Class
+
+            // 3. Pick center column if possible
+            int center = board.Columns / 2;
+            if (board.GetAvailableRow(center) != -1)
+                return center;
+
+            // 4. Pick random valid column
+            List<int> validCols = new List<int>();
+            for (int col = 0; col < board.Columns; col++)
+                if (board.GetAvailableRow(col) != -1)
+                    validCols.Add(col);
+
+            return validCols[rand.Next(validCols.Count)];
+        }
+    } //End of AI Player Class
 
     internal class Program
     {
