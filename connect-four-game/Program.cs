@@ -124,11 +124,13 @@ namespace connect_four_game
         {
             public string Winner { get; set; }
             public string Loser { get; set; }
+            public TimeSpan Duration { get; set; }
 
             public override string ToString()
             {
                 return $"Winner : {Winner} \n" +
-                    $"Loser: {Loser}";
+                    $"Loser: {Loser} \n" +  
+                    $"Total Game Duration: {Duration.Minutes} minutes {Duration.Seconds} seconds";
             }
         }
         private List<GameResult> _gameHistory = new List<GameResult>();
@@ -221,6 +223,7 @@ namespace connect_four_game
                 {
                     _board.DisplayBoard();
                     Console.WriteLine($"{_currentPlayer.Name} wins!");
+                    gameStopwatch.Stop();
 
                     //Save game result
                     string loser;
@@ -237,6 +240,7 @@ namespace connect_four_game
                     {
                         Winner = _currentPlayer.Name,
                         Loser = loser
+                        Duration = gameStopwatch.Elapsed    
                     });
 
                     break;
@@ -247,11 +251,13 @@ namespace connect_four_game
                 {
                     _board.DisplayBoard();
                     Console.WriteLine("It's a tie!");
+                    gameStopwatch.Stop();
 
                     _gameHistory.Add(new GameResult
                     {
                         Winner = "None",
                         Loser = "None"
+                        Duration = gameStopwatch.Elapsed     
                     });
 
                     break;
