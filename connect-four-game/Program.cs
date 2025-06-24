@@ -239,7 +239,7 @@ namespace connect_four_game
                     _gameHistory.Add(new GameResult
                     {
                         Winner = _currentPlayer.Name,
-                        Loser = loser
+                        Loser = loser,
                         Duration = gameStopwatch.Elapsed    
                     });
 
@@ -256,7 +256,7 @@ namespace connect_four_game
                     _gameHistory.Add(new GameResult
                     {
                         Winner = "None",
-                        Loser = "None"
+                        Loser = "None",
                         Duration = gameStopwatch.Elapsed     
                     });
 
