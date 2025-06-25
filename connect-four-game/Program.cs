@@ -450,6 +450,7 @@ public void SetCell(int row, int column, char value)
          if (input == null)
          {
              Console.WriteLine("\nTime's up! You missed your turn.");
+             Thread.Sleep(1500);
              break;
          }
 
