@@ -50,7 +50,7 @@ namespace connect_four_game
             }
             Console.WriteLine("\n");
         }
-
+       // Animate a disc dropping down a column
         public void AnimateDrop(int column, char disc)
 {
     for (int row = 0; row < Rows; row++)
@@ -485,7 +485,8 @@ public void SetCell(int row, int column, char value)
              board.DisplayBoard();
          }
      }
- }
+ }        // Reads input from the user with a time limit.
+  // If the user doesn't enter input within the time limit, returns null.
         private string ReadLineWithTimeout(int timeLimit)
     {
         Task<string> task = Task.Run(() => Console.ReadLine());
