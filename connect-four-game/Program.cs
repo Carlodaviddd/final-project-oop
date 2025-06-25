@@ -437,48 +437,51 @@ public void SetCell(int row, int column, char value)
         public HumanPlayer(string name, char disc) : base(name, disc) { }
 
         public override void PlayerMakeMove(Board board)
-        {
-            bool validMove = false;
-            int timeLimit = 30 * 1000; // 30 seconds
+ {
+     bool validMove = false;
+     int timeLimit = 30 * 1000; // 30 seconds
 
-            while (!validMove)
-            {
-                Console.WriteLine($"{Name}'s Turn '{Disc}' - You have 30 seconds to make a move.");
-                Console.Write("Enter move (1-7): ");
-                string input = ReadLineWithTimeout(timeLimit);
+     while (!validMove)
+     {
+         Console.WriteLine($"{Name}'s Turn '{Disc}' - You have 30 seconds to make a move.");
+         Console.Write("Enter move (1-7): ");
+         string input = ReadLineWithTimeout(timeLimit);
 
-                if (input == null)
+         if (input == null)
+         {
+             Console.WriteLine("\nTime's up! You missed your turn.");
+             break;
+         }
+
+         if (int.TryParse(input, out int column))
+         {
+             if (column >= 1 && column <= 7)
              {
-               Console.WriteLine("\nTime's up! You missed your turn.");
-               break;
-              }
-
-                if (int.TryParse(input, out int column))
-                {
-                    if (column >= 1 && column <= 7)
-                    {
-                        validMove = board.DroppingXO(column - 1, Disc);
-                        if (!validMove)
-                        {
-                            Console.WriteLine("\nColumn full. Try again.");
-                            board.DisplayBoard();
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("\nInvalid turn. Choose between 1-7.");
-                        board.DisplayBoard();
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("\nInvalid input.");
-                    board.DisplayBoard();
-                    
-                }
-            }
-        }
-
+                 validMove = board.DroppingXO(column - 1, Disc);
+                 if (validMove)
+                 {
+                     Console.WriteLine($"{Name} chose column {column}");
+                     Thread.Sleep(1500);
+                 }
+                 else
+                 {
+                     Console.WriteLine("\nColumn full. Try again.");
+                     board.DisplayBoard();
+                 }
+             }
+             else
+             {
+                 Console.WriteLine("\nInvalid turn. Choose between 1-7.");
+                 board.DisplayBoard();
+             }
+         }
+         else
+         {
+             Console.WriteLine("\nInvalid input.");
+             board.DisplayBoard();
+         }
+     }
+ }
         private string ReadLineWithTimeout(int timeLimit)
     {
         Task<string> task = Task.Run(() => Console.ReadLine());
@@ -513,6 +516,7 @@ public class AIPlayer : Players
 
         board.DroppingXO(column, Disc);
         Console.WriteLine($"AI chose column {column + 1}\n");
+        Thread.Sleep(1500);
     }
 
     private int ChooseBestMove(Board board, char aiDisc, char opponentDisc)
