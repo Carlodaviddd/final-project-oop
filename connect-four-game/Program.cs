@@ -467,18 +467,21 @@ public void SetCell(int row, int column, char value)
                  else
                  {
                      Console.WriteLine("\nColumn full. Try again.");
+                     Thread.Sleep(1500);
                      board.DisplayBoard();
                  }
              }
              else
              {
                  Console.WriteLine("\nInvalid turn. Choose between 1-7.");
+                 Thread.Sleep(1500);
                  board.DisplayBoard();
              }
          }
          else
          {
              Console.WriteLine("\nInvalid input.");
+             Thread.Sleep(1500);
              board.DisplayBoard();
          }
      }
