@@ -511,6 +511,7 @@ public class AIPlayer : Players
     public override void PlayerMakeMove(Board board)
     {
         Console.WriteLine($"{Name}'s Turn '{Disc}' (AI)");
+         Thread.Sleep(1500);
 
         char opponentDisc = Disc == 'X' ? 'O' : 'X';
         int column = ChooseBestMove(board, Disc, opponentDisc);
