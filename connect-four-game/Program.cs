@@ -135,6 +135,7 @@ namespace connect_four_game
             return true;
         }
         // Returns row index where disc would fall in column; -1 if full
+        // Get available row for a disc to fall in the specified column
         public int GetAvailableRow(int column)
         {
             for (int row = Rows - 1; row >= 0; row--)
