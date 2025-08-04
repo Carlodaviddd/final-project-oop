@@ -1,3 +1,3 @@
-# Final Project in Object Oriented Programming
+# Final Project: Object Oriented Programming
 
 This project is a **Connect Four Game** developed using **.NET** and **C#**.
